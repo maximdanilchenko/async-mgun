@@ -61,7 +61,7 @@ class UrlBuilder:
     __getitem__ = __getattr__
 
     def __str__(self):
-        return f'{self.base_url}/{"/".join(self.sub_url)}'
+        return f'{self.base_url}/{"/".join(self.sub_url)}' if self.sub_url else self.base_url
 
     __repr__ = __str__
 
@@ -138,8 +138,8 @@ def session_maker(self, headers=None):
 
 class HttpClientGroup:
     def __init__(self, *rules, json_worker=None):
-        self.urls = {name: ApiInfo(url, headers)
-                     for name, url, headers in rules}
+        self.urls = {name: ApiInfo(url, dict(headers))
+                     for name, url, *headers in rules}
         self.json = json_worker or json
 
     s = session = session_maker
@@ -150,6 +150,8 @@ class HttpClientGroup:
         else:
             raise NoBaseUrl()
 
+    __getitem__ = __getattr__
+
 
 class HttpClient:
     def __init__(self, url, headers=None, json_worker=None):
@@ -159,10 +161,15 @@ class HttpClient:
 
     s = session = session_maker
 
+    def __str__(self):
+        return self.url
+
     def __getattr__(self, name):
         if name in ALL_METHODS_LOWER:
             return getattr(UrlBuilder(self, self.url, self.headers, self.json), name)
         return UrlBuilder(self, self.url, self.headers, self.json, name)
+
+    __getitem__ = __getattr__
 
 
 if __name__ == '__main__':
