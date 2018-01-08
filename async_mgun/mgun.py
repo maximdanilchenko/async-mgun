@@ -35,7 +35,7 @@ ApiResponse = namedtuple('ApiResponse', ['status', 'data'])
 
 
 def format_path(path):
-    return f'{path}'.strip('_')
+    return '{}'.format(path).strip('_')
 
 
 async def format_response(response: aiohttp.ClientResponse, _json=json):
