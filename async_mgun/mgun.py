@@ -1,5 +1,4 @@
 import json
-import asyncio
 from collections import namedtuple
 
 import aiohttp
@@ -136,23 +135,6 @@ def session_maker(self, headers=None):
                                  json_serialize=self.json.dumps)
 
 
-class HttpClientGroup:
-    def __init__(self, *rules, json_worker=None):
-        self.urls = {name: ApiInfo(url, dict(headers))
-                     for name, url, *headers in rules}
-        self.json = json_worker or json
-
-    s = session = session_maker
-
-    def __getattr__(self, name):
-        if name in self.urls:
-            return UrlBuilder(self, *self.urls.get(name), self.json)
-        else:
-            raise NoBaseUrl()
-
-    __getitem__ = __getattr__
-
-
 class HttpClient:
     def __init__(self, url, headers=None, json_worker=None):
         self.url = url
@@ -172,14 +154,15 @@ class HttpClient:
     __getitem__ = __getattr__
 
 
-if __name__ == '__main__':
-    async def requests_testing():
-        import ujson
-        client = HttpClient('https://httpbin.org', json_worker=ujson)
-        print(client.api.users[3].name)
-        print(client.api.users.all)
-        print(await client.headers_.get({'data': 'smth'}, headers={'Auth': '123'}))
-        print(await client.get())
-        print(123)
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(asyncio.wait([requests_testing()]))
+class HttpClientGroup:
+    def __init__(self, *rules, json_worker=None):
+        self.urls = {name: HttpClient(url, dict(headers), json_worker)
+                     for name, url, *headers in rules}
+
+    def __getattr__(self, name):
+        if name in self.urls:
+            return self.urls.get(name)
+        else:
+            raise NoBaseUrl(f'{name} is not in urls')
+
+    __getitem__ = __getattr__
