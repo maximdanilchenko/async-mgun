@@ -60,7 +60,7 @@ class UrlBuilder:
     __getitem__ = __getattr__
 
     def __str__(self):
-        return f'{self.base_url}/{"/".join(self.sub_url)}' if self.sub_url else self.base_url
+        return '{}/{}'.format(self.base_url, "/".join(self.sub_url)) if self.sub_url else self.base_url
 
     __repr__ = __str__
 
@@ -163,6 +163,6 @@ class HttpClientGroup:
         if name in self.urls:
             return self.urls.get(name)
         else:
-            raise NoBaseUrl(f'{name} is not in urls')
+            raise NoBaseUrl('{} is not in urls'.format(name))
 
     __getitem__ = __getattr__
