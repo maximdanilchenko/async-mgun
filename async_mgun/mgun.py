@@ -60,13 +60,14 @@ class UrlBuilder:
     __getitem__ = __getattr__
 
     def __str__(self):
-        return '{}/{}'.format(self.base_url, "/".join(self.sub_url)) if self.sub_url else self.base_url
+        return '{}/{}'.format(self.base_url,
+                              "/".join(self.sub_url)) if self.sub_url else self.base_url
 
     __repr__ = __str__
 
     async def request(self, method, content=None, params=None, session=None, headers=None):
         if method not in ALL_METHODS:
-            raise UnsupportedHttpMethod
+            raise UnsupportedHttpMethod()
         if method in GET_METHODS and content:
             raise ContentInGet()
         return await self._check_session(method=method,
