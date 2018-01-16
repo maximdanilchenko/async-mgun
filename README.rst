@@ -11,4 +11,25 @@ async-mgun
 
 HTTP REST Client based on aiohttp with dynamic url building. Useful for microservices non-blocking communication
 
+Quickstart
+----------
+
+.. code-block:: python
+
+
+    from mgun import HttpClient
+    import asyncio
+
+    client = HttpClient('https://httpbin.org')
+
+
+    async def request():
+        resp = await client.anything.api.users[23].address.get({'q': '12'})
+
+        print(resp.status)  # 200
+        print(resp.data['url'])  # https://httpbin.org/anything/api/users/23/address?q=12
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(asyncio.wait([request()]))
+
 

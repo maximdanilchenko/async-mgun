@@ -85,8 +85,6 @@ class UrlBuilder:
 
     async def _make_request(self, session, method, url, content=None, params=None):
         async with session.request(method, url, params=params, json=content) as response:
-            print(url)
-            print(response)
             return await format_response(response, self.json)
 
     async def get(self, params=None, **kwargs):
