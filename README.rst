@@ -11,6 +11,13 @@ async-mgun
 
 HTTP REST Client based on aiohttp with dynamic url building. Useful for microservices non-blocking communication
 
+Install
+-------
+
+::
+
+    pip install async-mgun
+
 Quickstart
 ----------
 
