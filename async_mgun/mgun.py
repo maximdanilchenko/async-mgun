@@ -165,5 +165,3 @@ class HttpClientGroup:
             return self.urls.get(name)
         else:
             raise NoBaseUrl('{} is not in urls'.format(name))
-
-    __getitem__ = __getattr__
